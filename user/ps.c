@@ -1,13 +1,11 @@
-#include "ProcessInfo.h"
 #include "types.h"
-#include "stat.h"
 #include "user.h"
+#include "ProcessInfo.h"
 #include "param.h"
 
+int main() {
 
-int main(void)
-{
-	enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
+    enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 	 static char *states[] = {
   		[UNUSED]    "UNUSED  ",
   		[EMBRYO]    "EMBRYO  ",
@@ -16,18 +14,21 @@ int main(void)
   		[RUNNING]   "RUNNING ",
   		[ZOMBIE]    "ZOMBIE  "
   		};
-  	
-	struct ProcessInfo processInfoTable[NPROC];
-	int numbers = getprocs(processInfoTable);
-	int lineNumber;
-	for (int i = 0; i < numbers; i++)
-	{
-		lineNumber = i + 1;
-		printf(1, "%d %d ",lineNumber ,processInfoTable[i].ppid);
+    
+    printf(1, "Testing ps function ...\n");
+    struct ProcessInfo pInfo[NPROC];
+    printf(1, "Entering getprocs function ...\n");
+    int num = getprocs(pInfo);
+    printf(1, "Getprocs() returns %d\n", num);
 
-		printf(1, "%s",states[processInfoTable[i].state]);
-		printf(1, " %d %s", processInfoTable[i].sz,processInfoTable[i].name);
-		printf(1, "\n");
-	}
-	exit();
+    int i;
+    for (i=0; i < num; i++) {
+        printf(1, "%d %d ", pInfo[i].pid, pInfo[i].ppid); // linenum and parentid printed
+        printf(1, "%s ", states[pInfo[i].state]); // process state printed
+        printf(1, "%d %s\n", pInfo[i].sz,pInfo[i].name); // process size and name printed
+    }
+    
+
+
+    exit();
 }
